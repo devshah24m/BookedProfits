@@ -54,13 +54,14 @@ body::after{content:"";position:fixed;bottom:-280px;right:-140px;width:820px;hei
   letter-spacing:.08em;}
 .stamp.loss{background:var(--loss-soft);border-color:rgba(255,93,115,.35);color:var(--loss);}
 /* Stat grid */
-.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-top:24px;}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:24px;}
 .stat-card{background:var(--panel-2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;
   position:relative;overflow:hidden;}
 .stat-card::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;
   background:linear-gradient(90deg,transparent,rgba(255,255,255,.14),transparent);}
 .stat-label{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-dim);margin-bottom:6px;}
-.stat-value{font-size:16px;font-weight:600;font-family:'JetBrains Mono',monospace;color:var(--ink);}
+.stat-value{font-size:15px;font-weight:600;font-family:'JetBrains Mono',monospace;color:var(--ink);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 /* Charts */
 .chart-row{display:grid;grid-template-columns:1.6fr 1fr;gap:16px;margin:28px 0 16px;}
 .panel-card{background:var(--panel-2);border-radius:12px;border:1px solid var(--border);padding:18px 16px 14px;
@@ -173,7 +174,7 @@ tr:hover td{background:rgba(255,255,255,.015);}
     <div class="panel-card"><div class="panel-title serif">Exposure by symbol</div><canvas id="donutChart" height="200"></canvas><div class="donut-legend" id="donutLegend"></div></div>
   </div>
   <div class="panel-card" style="margin-bottom:22px;">
-    <div class="panel-title serif">Monthly booked profit (Equity)</div>
+    <div class="panel-title serif">Booked profit by stock (Equity)</div>
     <canvas id="barChart" height="170"></canvas>
   </div>
 
@@ -254,6 +255,7 @@ const DEFAULT_GS_URL = 'https://script.google.com/macros/s/AKfycbwFKWZuvjhJMVJ77
 let eqTrades = [], fnoTrades = [];
 let cumChart = null, barChart = null, donutChart = null;
 let openMonths = new Set();
+let monthsInitialized = false;
 let openLedgerSyms = new Set();
 
 // ── Helpers ──────────────────────────────────────────────────
@@ -351,7 +353,7 @@ function render() {
     ['Equity trades', eqTrades.length],
     ['FnO trades', fnoTrades.length],
     ['Win rate', wr + '%'],
-    ['Best trade', (bestEq.sym || '-') + ' | ' + fmt(bestEq.pnl || 0)],
+    ['Best trade', (bestEq.sym || '-') + ' \u00b7 ' + fmt(bestEq.pnl || 0)],
   ].forEach(([label, val]) => {
     const card = el('div', { class: 'stat-card' }, [el('div', { class: 'stat-label' }, [label])]);
     const sv = el('div', { class: 'stat-value mono' }, [String(val)]);
@@ -371,12 +373,13 @@ function renderCharts() {
   const cumL = [], cumD = [];
   sorted.forEach(t => { run += t.pnl; cumL.push(mLabel(t.sellDate)); cumD.push(Math.round(run)); });
 
-  const mmap = new Map();
-  sorted.forEach(t => { const k = mLabel(t.sellDate); mmap.set(k, (mmap.get(k) || 0) + t.pnl); });
-  const mL = [...mmap.keys()], mD = [...mmap.values()].map(v => Math.round(v));
+  const stockMap = new Map();
+  eqTrades.forEach(t => stockMap.set(t.sym, (stockMap.get(t.sym) || 0) + t.pnl));
+  const stockArr = [...stockMap.entries()].map(([sym, pnl]) => ({ sym, pnl: Math.round(pnl) })).sort((a, b) => b.pnl - a.pnl);
+  const mL = stockArr.map(s => s.sym), mD = stockArr.map(s => s.pnl);
 
   const smap = new Map();
-  [...eqTrades, ...fnoTrades].forEach(t => smap.set(t.sym, (smap.get(t.sym) || 0) + Math.abs(t.pnl)));
+  [...eqTrades, ...fnoTrades].forEach(t => smap.set(t.sym, (smap.get(t.sym) || 0) + (t.buyP * t.qty)));
   let sArr = [...smap.entries()].map(([n, v]) => ({ n, v: Math.round(v) })).sort((a, b) => b.v - a.v);
   if (sArr.length > 6) { const top = sArr.slice(0, 5), rest = sArr.slice(5).reduce((s, x) => s + x.v, 0); sArr = [...top, { n: 'Other', v: Math.round(rest) }]; }
   const dC = ['#7c6cff', '#34d0f0', '#34e0a1', '#f0b429', '#ff5d73', '#54607a'];
@@ -402,7 +405,7 @@ function renderCharts() {
     type: 'bar',
     data: { labels: mL, datasets: [{ data: mD, backgroundColor: mD.map(v => v >= 0 ? barGradPos : 'rgba(255,93,115,.12)'), borderColor: mD.map(v => v >= 0 ? '#34e0a1' : '#ff5d73'), borderWidth: mD.map(v => v >= 0 ? 0 : 1.5), borderRadius: 4 }] },
     options: { plugins: { legend: { display: false }, tooltip: { backgroundColor: '#11161f', borderColor: 'rgba(148,163,184,.2)', borderWidth: 1, titleColor: '#e7eaf2', bodyColor: '#e7eaf2', callbacks: { label: c => fmt(c.parsed.y) } } },
-      scales: { x: { grid: { display: false }, ticks: { color: tick, font: { size: 11 } } }, y: { grid: { color: grid }, ticks: { color: tick, font: { size: 11 }, callback: v => '\u20b9' + Math.round(v / 1000) + 'k' } } } }
+      scales: { x: { grid: { display: false }, ticks: { color: tick, font: { size: 11 }, maxRotation: 60, minRotation: mL.length > 8 ? 45 : 0 } }, y: { grid: { color: grid }, ticks: { color: tick, font: { size: 11 }, callback: v => '\u20b9' + Math.round(v / 1000) + 'k' } } } }
   });
   if (donutChart) donutChart.destroy();
   donutChart = new Chart(document.getElementById('donutChart'), {
@@ -426,7 +429,7 @@ function renderEquity() {
     mmap.get(k).trades.push(t);
   });
   const groups = [...mmap.values()].sort((a, b) => a.key.localeCompare(b.key)).reverse();
-  if (!openMonths.size && groups.length) openMonths.add(groups[0].key);
+  if (!monthsInitialized && groups.length) { openMonths.add(groups[0].key); monthsInitialized = true; }
 
   const mc = document.getElementById('monthCards'); mc.innerHTML = '';
   groups.forEach(g => {
