@@ -97,6 +97,12 @@ tr:last-child td{border-bottom:none;}
 tr:hover td{background:var(--stripe);}
 .pos{color:var(--profit);font-weight:600;}
 .neg{color:var(--loss);font-weight:600;}
+.ledger-row.expandable{cursor:pointer;}
+.ledger-row.expandable:hover td{background:var(--stripe);}
+.ledger-subrow td{background:var(--panel);padding:0;border-bottom:1px dashed var(--hairline);}
+.ledger-subrow table th{border-bottom:1px solid var(--hairline);color:var(--ink-dim);text-transform:uppercase;letter-spacing:.06em;}
+.ledger-subrow table td{border-bottom:1px dashed var(--hairline);}
+.ledger-subrow table tr:last-child td{border-bottom:none;}
 /* FnO cards */
 .fno-banner{background:var(--fnos);border:1px solid var(--fno);border-radius:8px;padding:12px 16px;margin-bottom:18px;font-size:13px;}
 .fno-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-bottom:24px;}
@@ -212,6 +218,7 @@ const GS_KEY = 'bp_gs_url';
 let eqTrades = [], fnoTrades = [];
 let cumChart = null, barChart = null, donutChart = null;
 let openMonths = new Set();
+let openLedgerSyms = new Set();
 
 // ── Helpers ──────────────────────────────────────────────────
 function fmt(n) {
@@ -414,18 +421,73 @@ function renderEquity() {
     tbl.appendChild(tb); body.appendChild(tbl); card.appendChild(body); mc.appendChild(card);
   });
 
+  renderEquityLedger();
+}
+
+// ── Full equity ledger (merged by symbol, expandable) ─────────
+function renderEquityLedger() {
   const tb2 = document.getElementById('eqBody'); tb2.innerHTML = '';
   if (!eqTrades.length) { tb2.innerHTML = '<tr><td colspan="7" class="loading">No equity trades loaded yet.</td></tr>'; return; }
-  [...eqTrades].sort((a, b) => new Date(b.sellDate) - new Date(a.sellDate)).forEach(t => {
-    tb2.appendChild(el('tr', null, [
-      el('td', { style: 'font-weight:600;' }, [t.sym]),
-      el('td', { class: 'mono' }, [String(t.qty)]),
-      el('td', { class: 'mono' }, [t.buyDate || '-']),
-      el('td', { class: 'mono' }, ['\u20b9' + t.buyP]),
-      el('td', { class: 'mono' }, [t.sellDate || '-']),
-      el('td', { class: 'mono' }, ['\u20b9' + t.sellP]),
-      (() => { const td = el('td', { class: 'mono' }); td.appendChild(pnlEl(t.pnl)); return td; })()
-    ]));
+
+  const symMap = new Map();
+  eqTrades.forEach(t => {
+    if (!symMap.has(t.sym)) symMap.set(t.sym, { sym: t.sym, qty: 0, bv: 0, sv: 0, pnl: 0, cnt: 0, trades: [] });
+    const s = symMap.get(t.sym);
+    s.qty += t.qty; s.bv += t.buyP * t.qty; s.sv += t.sellP * t.qty; s.pnl += t.pnl; s.cnt += 1;
+    s.trades.push(t);
+  });
+
+  const rows = [...symMap.values()].map(s => ({
+    ...s,
+    ab: s.bv / s.qty,
+    as: s.sv / s.qty,
+    pnl: Math.round(s.pnl),
+    latest: s.trades.reduce((m, t) => (t.sellDate && t.sellDate > m) ? t.sellDate : m, '')
+  })).sort((a, b) => (b.latest || '').localeCompare(a.latest || ''));
+
+  rows.forEach(r => {
+    const multi = r.cnt > 1;
+    const isOpen = openLedgerSyms.has(r.sym);
+    const toggle = () => { if (openLedgerSyms.has(r.sym)) openLedgerSyms.delete(r.sym); else openLedgerSyms.add(r.sym); renderEquityLedger(); };
+
+    const symCell = el('td', { style: 'font-weight:600;' + (multi ? 'cursor:pointer;' : '') }, [
+      ...(multi ? [el('span', { class: 'chevron' + (isOpen ? ' open' : ''), style: 'margin-right:6px;vertical-align:-2px;', html: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>' })] : []),
+      document.createTextNode(r.sym),
+      ...(multi ? [el('span', { class: 'mono', style: 'color:var(--ink-dim);font-weight:400;font-size:11px;margin-left:6px;' }, ['(' + r.cnt + ' txns)'])] : [])
+    ]);
+
+    const mainAttrs = { class: 'ledger-row' + (multi ? ' expandable' : '') };
+    if (multi) mainAttrs.onclick = toggle;
+    const mainRow = el('tr', mainAttrs, [
+      symCell,
+      el('td', { class: 'mono' }, [String(r.qty)]),
+      el('td', { class: 'mono' }, [multi ? '\u2014' : (r.trades[0].buyDate || '-')]),
+      el('td', { class: 'mono' }, ['\u20b9' + r.ab.toFixed(2)]),
+      el('td', { class: 'mono' }, [multi ? '\u2014' : (r.trades[0].sellDate || '-')]),
+      el('td', { class: 'mono' }, ['\u20b9' + r.as.toFixed(2)]),
+      (() => { const td = el('td', { class: 'mono' }); td.appendChild(pnlEl(r.pnl)); return td; })()
+    ]);
+    tb2.appendChild(mainRow);
+
+    if (multi && isOpen) {
+      const subRow = el('tr', { class: 'ledger-subrow' });
+      const subTd = el('td', { colspan: '7', style: 'padding:0;' });
+      const subTbl = el('table', { style: 'width:100%;background:var(--paper);' });
+      subTbl.appendChild(el('thead', null, [el('tr', null, ['', 'Qty', 'Buy Date', 'Buy Price', 'Sell Date', 'Sell Price', 'Profit'].map(h => el('th', { style: 'font-size:10px;padding:6px 10px;' }, [h])))]));
+      const subTb = el('tbody');
+      [...r.trades].sort((a, b) => new Date(b.sellDate) - new Date(a.sellDate)).forEach(t => {
+        subTb.appendChild(el('tr', null, [
+          el('td', { style: 'padding-left:26px;color:var(--ink-dim);font-size:12px;' }, ['\u21b3']),
+          el('td', { class: 'mono', style: 'font-size:12px;' }, [String(t.qty)]),
+          el('td', { class: 'mono', style: 'font-size:12px;' }, [t.buyDate || '-']),
+          el('td', { class: 'mono', style: 'font-size:12px;' }, ['\u20b9' + t.buyP]),
+          el('td', { class: 'mono', style: 'font-size:12px;' }, [t.sellDate || '-']),
+          el('td', { class: 'mono', style: 'font-size:12px;' }, ['\u20b9' + t.sellP]),
+          (() => { const td = el('td', { class: 'mono', style: 'font-size:12px;' }); td.appendChild(pnlEl(t.pnl)); return td; })()
+        ]));
+      });
+      subTbl.appendChild(subTb); subTd.appendChild(subTbl); subRow.appendChild(subTd); tb2.appendChild(subRow);
+    }
   });
 }
 
