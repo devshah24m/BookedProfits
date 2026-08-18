@@ -117,24 +117,24 @@ body{background-image:radial-gradient(circle,rgba(148,163,184,.08) 1px,transpare
 .chevron.open{transform:rotate(90deg);}
 .mbody{border-top:1px solid var(--border);display:none;}
 .mbody.open{display:block;}
-.mmeta{font-size:11px;color:var(--ink-faint);}
+.mmeta{font-size:12.5px;color:var(--ink-faint);}
 /* Table */
 .tbl-wrap{overflow-x:auto;background:var(--panel-2);border-radius:10px;border:1px solid var(--border);}
 table{width:100%;border-collapse:collapse;}
-th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-faint);
-  font-weight:600;padding:10px 12px;border-bottom:1px solid var(--border);}
-td{padding:10px 12px;font-size:13px;border-bottom:1px solid var(--border-soft);color:var(--ink);}
+th{text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-faint);
+  font-weight:600;padding:12px 14px;border-bottom:1px solid var(--border);}
+td{padding:12px 14px;font-size:14px;border-bottom:1px solid var(--border-soft);color:var(--ink);}
 tr:last-child td{border-bottom:none;}
 tr:hover td{background:rgba(255,255,255,.015);}
 .pos{color:var(--profit);font-weight:700;font-size:1.08em;letter-spacing:.01em;white-space:nowrap;}
 .neg{color:var(--loss);font-weight:700;font-size:1.08em;letter-spacing:.01em;white-space:nowrap;}
-.ledger-row td{padding-top:12px;padding-bottom:12px;}
-.ledger-row .pos,.ledger-row .neg{font-size:14px;}
+.ledger-row td{padding-top:14px;padding-bottom:14px;}
+.ledger-row .pos,.ledger-row .neg{font-size:15px;}
 .ledger-row.expandable{cursor:pointer;}
 .ledger-row.expandable:hover td{background:rgba(124,108,255,.05);}
 .ledger-subrow td{background:var(--panel);padding:0;border-bottom:1px solid var(--border-soft);}
-.ledger-subrow table th{border-bottom:1px solid var(--border);color:var(--ink-faint);text-transform:uppercase;letter-spacing:.06em;}
-.ledger-subrow table td{border-bottom:1px dashed var(--border-soft);color:var(--ink-dim);}
+.ledger-subrow table th{border-bottom:1px solid var(--border);color:var(--ink-faint);text-transform:uppercase;letter-spacing:.06em;font-size:11.5px !important;padding:9px 14px !important;}
+.ledger-subrow table td{border-bottom:1px dashed var(--border-soft);color:var(--ink-dim);font-size:13.5px !important;padding:10px 14px !important;}
 .ledger-subrow table tr:last-child td{border-bottom:none;}
 /* FnO cards */
 .fno-banner{background:var(--fno-soft);border:1px solid rgba(240,180,41,.3);border-radius:10px;padding:14px 18px;
@@ -219,7 +219,7 @@ tr:hover td{background:rgba(255,255,255,.015);}
   <div id="tabEquity">
     <div class="sec-head">
       <div class="serif">Monthly profit by stock</div>
-      <div class="mono" id="eqTotal" style="font-size:12px;color:var(--ink-dim);"></div>
+      <div class="mono" id="eqTotal" style="font-size:13.5px;color:var(--ink-dim);"></div>
     </div>
     <div id="monthCards" style="margin-bottom:22px;"></div>
     <div class="sec-head"><div class="serif">Full equity ledger</div></div>
@@ -234,7 +234,7 @@ tr:hover td{background:rgba(255,255,255,.015);}
     <div class="fno-banner"><b style="color:var(--fno);">FnO Trades</b> &mdash; No dates required. Cards grouped by symbol, full ledger below.</div>
     <div class="sec-head">
       <div class="serif" style="color:var(--fno);">FnO Trade Cards</div>
-      <div class="mono" id="fnoTotal" style="font-size:12px;color:var(--ink-dim);"></div>
+      <div class="mono" id="fnoTotal" style="font-size:13.5px;color:var(--ink-dim);"></div>
     </div>
     <div class="fno-grid" id="fnoGrid"><div class="loading">Waiting for data...</div></div>
     <div class="sec-head" style="margin-top:24px;"><div class="serif">Full FnO ledger</div></div>
@@ -246,7 +246,7 @@ tr:hover td{background:rgba(255,255,255,.015);}
 
   <!-- SEGMENTS -->
   <div id="tabSeg" style="display:none;">
-    <div class="sec-head"><div class="serif">Segment-wise profit</div><div class="mono" id="segTotal" style="font-size:12px;"></div></div>
+    <div class="sec-head"><div class="serif">Segment-wise profit</div><div class="mono" id="segTotal" style="font-size:13.5px;"></div></div>
     <div class="panel-card" id="segPanel"><div class="loading">Waiting for data...</div></div>
   </div>
 
@@ -517,7 +517,7 @@ function renderEquityLedger() {
     const symCell = el('td', { style: 'font-weight:600;' + (multi ? 'cursor:pointer;' : '') }, [
       ...(multi ? [el('span', { class: 'chevron' + (isOpen ? ' open' : ''), style: 'margin-right:6px;vertical-align:-2px;', html: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>' })] : []),
       document.createTextNode(r.sym),
-      ...(multi ? [el('span', { class: 'mono', style: 'color:var(--ink-dim);font-weight:400;font-size:11px;margin-left:6px;' }, ['(' + r.cnt + ' txns)'])] : [])
+      ...(multi ? [el('span', { class: 'mono', style: 'color:var(--ink-dim);font-weight:400;font-size:12.5px;margin-left:6px;' }, ['(' + r.cnt + ' txns)'])] : [])
     ]);
 
     const mainAttrs = { class: 'ledger-row' + (multi ? ' expandable' : '') };
@@ -537,17 +537,17 @@ function renderEquityLedger() {
       const subRow = el('tr', { class: 'ledger-subrow' });
       const subTd = el('td', { colspan: '7', style: 'padding:0;' });
       const subTbl = el('table', { style: 'width:100%;background:var(--panel);' });
-      subTbl.appendChild(el('thead', null, [el('tr', null, ['', 'Qty', 'Buy Date', 'Buy Price', 'Sell Date', 'Sell Price', 'Profit'].map(h => el('th', { style: 'font-size:10px;padding:6px 10px;' }, [h])))]));
+      subTbl.appendChild(el('thead', null, [el('tr', null, ['', 'Qty', 'Buy Date', 'Buy Price', 'Sell Date', 'Sell Price', 'Profit'].map(h => el('th', null, [h])))]));
       const subTb = el('tbody');
       [...r.trades].sort((a, b) => new Date(b.sellDate) - new Date(a.sellDate)).forEach(t => {
         subTb.appendChild(el('tr', null, [
-          el('td', { style: 'padding-left:26px;color:var(--ink-dim);font-size:12px;' }, ['\u21b3']),
-          el('td', { class: 'mono', style: 'font-size:12px;' }, [String(t.qty)]),
-          el('td', { class: 'mono', style: 'font-size:12px;' }, [t.buyDate || '-']),
-          el('td', { class: 'mono', style: 'font-size:12px;' }, ['\u20b9' + t.buyP]),
-          el('td', { class: 'mono', style: 'font-size:12px;' }, [t.sellDate || '-']),
-          el('td', { class: 'mono', style: 'font-size:12px;' }, ['\u20b9' + t.sellP]),
-          (() => { const td = el('td', { class: 'mono', style: 'font-size:12px;' }); td.appendChild(pnlEl(t.pnl)); return td; })()
+          el('td', { style: 'padding-left:28px;color:var(--ink-dim);' }, ['\u21b3']),
+          el('td', { class: 'mono' }, [String(t.qty)]),
+          el('td', { class: 'mono' }, [t.buyDate || '-']),
+          el('td', { class: 'mono' }, ['\u20b9' + t.buyP]),
+          el('td', { class: 'mono' }, [t.sellDate || '-']),
+          el('td', { class: 'mono' }, ['\u20b9' + t.sellP]),
+          (() => { const td = el('td', { class: 'mono' }); td.appendChild(pnlEl(t.pnl)); return td; })()
         ]));
       });
       subTbl.appendChild(subTb); subTd.appendChild(subTbl); subRow.appendChild(subTd); tb2.appendChild(subRow);
