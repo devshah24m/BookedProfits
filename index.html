@@ -19,7 +19,7 @@
   --fno:#f0b429;--fno-soft:rgba(240,180,41,.12);
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--bg);font-family:'Inter',sans-serif;color:var(--ink);padding:40px 16px;
+body{background:var(--bg);font-family:'Inter',sans-serif;color:var(--ink);padding:28px clamp(16px,3vw,48px);
   min-height:100vh;position:relative;overflow-x:hidden;}
 body::before{content:"";position:fixed;top:-220px;left:50%;transform:translateX(-58%);
   width:900px;height:600px;background:radial-gradient(circle,var(--accent-1) 0%,transparent 65%);
@@ -31,8 +31,8 @@ body{background-image:radial-gradient(circle,rgba(148,163,184,.08) 1px,transpare
   background-size:26px 26px;background-attachment:fixed;}
 .serif{font-family:'Space Grotesk',sans-serif;}
 .mono{font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums;}
-.shell{max-width:min(1240px,94vw);margin:0 auto;background:linear-gradient(180deg,var(--panel-2),var(--panel));
-  border-radius:16px;border:1px solid var(--border);padding:36px 32px 52px;
+.shell{max-width:1800px;width:100%;margin:0 auto;background:linear-gradient(180deg,var(--panel-2),var(--panel));
+  border-radius:16px;border:1px solid var(--border);padding:36px clamp(20px,3vw,48px) 52px;
   position:relative;z-index:1;overflow:hidden;
   box-shadow:0 40px 90px -40px rgba(0,0,0,.75),0 1px 0 rgba(255,255,255,.03) inset;}
 .shell::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;
@@ -175,7 +175,7 @@ tr:hover td{background:rgba(255,255,255,.015);}
 
   <div class="chart-row">
     <div class="panel-card"><div class="panel-title serif">Cumulative booked profit</div><canvas id="cumChart" height="200"></canvas></div>
-    <div class="panel-card"><div class="panel-title serif">Exposure by symbol</div><canvas id="donutChart" height="200"></canvas><div class="donut-legend" id="donutLegend"></div></div>
+    <div class="panel-card"><div class="panel-title serif">Profit by symbol</div><canvas id="donutChart" height="200"></canvas><div class="donut-legend" id="donutLegend"></div></div>
   </div>
   <div class="panel-card" style="margin-bottom:22px;">
     <div class="panel-title serif">Booked profit by stock (Equity)</div>
@@ -383,8 +383,8 @@ function renderCharts() {
   const mL = stockArr.map(s => s.sym), mD = stockArr.map(s => s.pnl);
 
   const smap = new Map();
-  [...eqTrades, ...fnoTrades].forEach(t => smap.set(t.sym, (smap.get(t.sym) || 0) + (t.buyP * t.qty)));
-  let sArr = [...smap.entries()].map(([n, v]) => ({ n, v: Math.round(v) })).sort((a, b) => b.v - a.v);
+  [...eqTrades, ...fnoTrades].forEach(t => smap.set(t.sym, (smap.get(t.sym) || 0) + t.pnl));
+  let sArr = [...smap.entries()].map(([n, v]) => ({ n, v: Math.round(v) })).sort((a, b) => Math.abs(b.v) - Math.abs(a.v));
   if (sArr.length > 6) { const top = sArr.slice(0, 5), rest = sArr.slice(5).reduce((s, x) => s + x.v, 0); sArr = [...top, { n: 'Other', v: Math.round(rest) }]; }
   const dC = ['#7c6cff', '#34d0f0', '#34e0a1', '#f0b429', '#ff5d73', '#54607a'];
   const grid = 'rgba(255,255,255,.06)', tick = '#8791a6';
@@ -416,9 +416,9 @@ function renderCharts() {
   if (donutChart) donutChart.destroy();
   donutChart = new Chart(document.getElementById('donutChart'), {
     type: 'doughnut',
-    data: { labels: sArr.map(s => s.n), datasets: [{ data: sArr.map(s => s.v), backgroundColor: sArr.map((_, i) => dC[i % dC.length]), borderColor: '#11161f', borderWidth: 3 }] },
+    data: { labels: sArr.map(s => s.n), datasets: [{ data: sArr.map(s => Math.abs(s.v)), backgroundColor: sArr.map((_, i) => dC[i % dC.length]), borderColor: '#11161f', borderWidth: 3 }] },
     options: { devicePixelRatio: Math.max(window.devicePixelRatio || 1, 2), responsive: true,
-      plugins: { legend: { display: false }, tooltip: { backgroundColor: '#11161f', borderColor: 'rgba(148,163,184,.2)', borderWidth: 1.5, cornerRadius: 10, padding: 14, displayColors: true, boxWidth: 10, boxHeight: 10, boxPadding: 6, titleColor: '#8791a6', titleFont: { size: 13, weight: '600', family: "'JetBrains Mono', monospace" }, bodyColor: '#e7eaf2', bodyFont: { size: 18, weight: '700', family: "'JetBrains Mono', monospace" }, callbacks: { label: c => c.label + ': ' + fmt(c.parsed) } } }, cutout: '62%' }
+      plugins: { legend: { display: false }, tooltip: { backgroundColor: '#11161f', borderColor: 'rgba(148,163,184,.2)', borderWidth: 1.5, cornerRadius: 10, padding: 14, displayColors: true, boxWidth: 10, boxHeight: 10, boxPadding: 6, titleColor: '#8791a6', titleFont: { size: 13, weight: '600', family: "'JetBrains Mono', monospace" }, bodyColor: '#e7eaf2', bodyFont: { size: 18, weight: '700', family: "'JetBrains Mono', monospace" }, callbacks: { label: c => c.label + ': ' + fmt(sArr[c.dataIndex].v) } } }, cutout: '62%' }
   });
   const dl = document.getElementById('donutLegend'); dl.innerHTML = '';
   sArr.forEach((s, i) => dl.appendChild(el('div', { class: 'legend-item' }, [el('span', { class: 'swatch', style: 'background:' + dC[i % dC.length] + ';' }), document.createTextNode(s.n)])));
