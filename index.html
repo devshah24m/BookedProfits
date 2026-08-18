@@ -150,7 +150,7 @@ tr:hover td{background:var(--stripe);}
   </div>
 
   <!-- Apps Script URL setup -->
-  <div class="setup-box" id="setupBox">
+  <div class="setup-box" id="setupBox" style="display:none;">
     <h3 class="serif">Connect to Google Sheet</h3>
     <label style="font-size:12px;font-weight:600;color:var(--ink-dim);">Apps Script Web App URL
       <input id="gsUrl" placeholder="https://script.google.com/macros/s/.../exec" value="">
@@ -168,6 +168,10 @@ tr:hover td{background:var(--stripe);}
       <button class="btn btn-outline" id="refreshBtn" onclick="refreshData()" style="display:none">Refresh Data</button>
     </div>
     <div class="status" id="status"></div>
+  </div>
+  <div style="display:flex;justify-content:flex-end;gap:8px;margin:-10px 0 18px;">
+    <button class="btn btn-outline" style="padding:5px 12px;font-size:11px;" onclick="refreshData()">&#8635; Refresh</button>
+    <button class="btn btn-outline" style="padding:5px 12px;font-size:11px;" onclick="toggleSetup()" id="setupToggleBtn">&#9881; Change source</button>
   </div>
 
   <div class="tab-bar">
@@ -215,6 +219,10 @@ tr:hover td{background:var(--stripe);}
 
 <script>
 const GS_KEY = 'bp_gs_url';
+// Default Apps Script Web App URL — baked in so the dashboard loads automatically.
+// Change this if you redeploy the Apps Script and get a new /exec URL, or use
+// "Change source" in the UI to override per-browser without editing this file.
+const DEFAULT_GS_URL = 'https://script.google.com/macros/s/AKfycbwFKWZuvjhJMVJ77qFxXhS_SFs8_gTxsyVIcnknnE4sPFY66kUIsFqRXKYWQli1Re48/exec';
 let eqTrades = [], fnoTrades = [];
 let cumChart = null, barChart = null, donutChart = null;
 let openMonths = new Set();
@@ -260,6 +268,10 @@ function switchTab(name, btn) {
 }
 
 // ── Connect ──────────────────────────────────────────────────
+function toggleSetup() {
+  const box = document.getElementById('setupBox');
+  box.style.display = box.style.display === 'none' ? '' : 'none';
+}
 function connectAndLoad() {
   const url = document.getElementById('gsUrl').value.trim();
   if (!url) { setStatus('err', 'Paste the Apps Script Web App URL first.'); return; }
@@ -267,7 +279,7 @@ function connectAndLoad() {
   fetchData(url);
 }
 function refreshData() {
-  const url = localStorage.getItem(GS_KEY);
+  const url = localStorage.getItem(GS_KEY) || DEFAULT_GS_URL;
   if (url) fetchData(url);
 }
 
@@ -563,10 +575,12 @@ function renderSeg() {
 }
 
 // ── Boot ─────────────────────────────────────────────────────
-const saved = localStorage.getItem(GS_KEY) || '';
+const saved = localStorage.getItem(GS_KEY) || DEFAULT_GS_URL;
 if (saved) {
   document.getElementById('gsUrl').value = saved;
   fetchData(saved);
+} else {
+  toggleSetup();
 }
 </script>
 </body>
