@@ -1,0 +1,302 @@
+[
+  {
+    "id": "imp17870308966480",
+    "buyDate": "2026-03-18",
+    "date": "2026-04-14",
+    "symbol": "ABB",
+    "segment": "Equity",
+    "qty": 1000,
+    "buy": 6251.9339,
+    "sell": 6842.1183
+  },
+  {
+    "id": "imp17870308966491",
+    "buyDate": "2026-04-09",
+    "date": "2026-04-16",
+    "symbol": "ABB",
+    "segment": "Equity",
+    "qty": 1000,
+    "buy": 6727.8699,
+    "sell": 7025.92
+  },
+  {
+    "id": "imp17870308966492",
+    "buyDate": "2026-04-09",
+    "date": "2026-04-19",
+    "symbol": "ABB",
+    "segment": "Equity",
+    "qty": 1000,
+    "buy": 6727.8699,
+    "sell": 7060.85
+  },
+  {
+    "id": "imp17870308966493",
+    "buyDate": "2026-03-18",
+    "date": "2026-04-16",
+    "symbol": "AETHER",
+    "segment": "Equity",
+    "qty": 1000,
+    "buy": 1061.3685,
+    "sell": 1175.653
+  },
+  {
+    "id": "imp17870308966494",
+    "buyDate": "2026-06-14",
+    "date": "2026-07-19",
+    "symbol": "CENTUM",
+    "segment": "Equity",
+    "qty": 500,
+    "buy": 3677.9907,
+    "sell": 3707.8069
+  },
+  {
+    "id": "imp17870308966495",
+    "buyDate": "2026-04-22",
+    "date": "2026-05-14",
+    "symbol": "DRREDDY",
+    "segment": "Equity",
+    "qty": 5000,
+    "buy": 1269.8784,
+    "sell": 1335.6366
+  },
+  {
+    "id": "imp17870308966496",
+    "buyDate": "2026-04-22",
+    "date": "2026-05-24",
+    "symbol": "DRREDDY",
+    "segment": "Equity",
+    "qty": 2000,
+    "buy": 1269.8784,
+    "sell": 1330.6988
+  },
+  {
+    "id": "imp17870308966497",
+    "buyDate": "2026-04-22",
+    "date": "2026-05-26",
+    "symbol": "DRREDDY",
+    "segment": "Equity",
+    "qty": 3000,
+    "buy": 1269.8784,
+    "sell": 1323.0322
+  },
+  {
+    "id": "imp17870308966498",
+    "buyDate": "2026-04-16",
+    "date": "2026-06-15",
+    "symbol": "ENRIN",
+    "segment": "Equity",
+    "qty": 1000,
+    "buy": 3051.0841,
+    "sell": 3635.1486
+  },
+  {
+    "id": "imp17870308966499",
+    "buyDate": "2026-04-16",
+    "date": "2026-06-18",
+    "symbol": "ENRIN",
+    "segment": "Equity",
+    "qty": 1000,
+    "buy": 3051.0841,
+    "sell": 3788.6983
+  },
+  {
+    "id": "imp178703089664910",
+    "buyDate": "2026-04-16",
+    "date": "2026-06-22",
+    "symbol": "ENRIN",
+    "segment": "Equity",
+    "qty": 1000,
+    "buy": 3051.0841,
+    "sell": 3847.3198
+  },
+  {
+    "id": "imp178703089664911",
+    "buyDate": "2026-05-26",
+    "date": "2026-06-24",
+    "symbol": "ENRIN",
+    "segment": "Equity",
+    "qty": 1000,
+    "buy": 3737.1382,
+    "sell": 3717.6281
+  },
+  {
+    "id": "imp178703089664912",
+    "buyDate": "2026-05-26",
+    "date": "2026-06-29",
+    "symbol": "ENRIN",
+    "segment": "Equity",
+    "qty": 1000,
+    "buy": 3737.1382,
+    "sell": 3662.7342
+  },
+  {
+    "id": "imp178703089664913",
+    "buyDate": "2026-03-18",
+    "date": "2026-05-04",
+    "symbol": "GVPIL",
+    "segment": "Equity",
+    "qty": 1500,
+    "buy": 442.4621,
+    "sell": 648.7
+  },
+  {
+    "id": "imp178703089664914",
+    "buyDate": "2026-03-18",
+    "date": "2026-05-13",
+    "symbol": "GVPIL",
+    "segment": "Equity",
+    "qty": 1000,
+    "buy": 442.4621,
+    "sell": 724.4793
+  },
+  {
+    "id": "imp178703089664915",
+    "buyDate": "2026-06-15",
+    "date": "2026-06-17",
+    "symbol": "KFINTECH",
+    "segment": "Equity",
+    "qty": 2000,
+    "buy": 859.6184,
+    "sell": 903.8238
+  },
+  {
+    "id": "imp178703089664916",
+    "buyDate": "2026-03-18",
+    "date": "2026-04-16",
+    "symbol": "LT",
+    "segment": "Equity",
+    "qty": 500,
+    "buy": 3464.2408,
+    "sell": 4085.1134
+  },
+  {
+    "id": "imp178703089664917",
+    "buyDate": "2026-03-18",
+    "date": "2026-04-19",
+    "symbol": "LT",
+    "segment": "Equity",
+    "qty": 1000,
+    "buy": 3464.2408,
+    "sell": 4039.5059
+  },
+  {
+    "id": "imp178703089664918",
+    "buyDate": "2026-03-18",
+    "date": "2026-05-03",
+    "symbol": "INTERARCH",
+    "segment": "Equity",
+    "qty": 500,
+    "buy": 1786.5924,
+    "sell": 2199.9751
+  },
+  {
+    "id": "imp178703089664919",
+    "buyDate": "2026-03-18",
+    "date": "2026-05-04",
+    "symbol": "INTERARCH",
+    "segment": "Equity",
+    "qty": 100,
+    "buy": 1786.5924,
+    "sell": 2238.1826
+  },
+  {
+    "id": "imp178703089664920",
+    "buyDate": "2026-04-19",
+    "date": "2026-05-04",
+    "symbol": "INTERARCH",
+    "segment": "Equity",
+    "qty": 400,
+    "buy": 1983.898,
+    "sell": 2238.1826
+  },
+  {
+    "id": "imp178703089664921",
+    "buyDate": "2026-04-19",
+    "date": "2026-05-12",
+    "symbol": "INTERARCH",
+    "segment": "Equity",
+    "qty": 1000,
+    "buy": 1983.898,
+    "sell": 2054.4469
+  },
+  {
+    "id": "imp178703089664922",
+    "buyDate": "2026-04-19",
+    "date": "2026-05-24",
+    "symbol": "INTERARCH",
+    "segment": "Equity",
+    "qty": 1000,
+    "buy": 1983.898,
+    "sell": 1806.8614
+  },
+  {
+    "id": "imp178703089664923",
+    "buyDate": "2026-05-13",
+    "date": "2026-06-14",
+    "symbol": "INTERARCH",
+    "segment": "Equity",
+    "qty": 1000,
+    "buy": 1817.1678,
+    "sell": 1827.1819
+  },
+  {
+    "id": "imp178703089664924",
+    "buyDate": "2026-03-18",
+    "date": "2026-04-14",
+    "symbol": "SCHNEIDER",
+    "segment": "Equity",
+    "qty": 2000,
+    "buy": 900.2936,
+    "sell": 995.7943
+  },
+  {
+    "id": "imp178703089664925",
+    "buyDate": "2026-03-18",
+    "date": "2026-04-16",
+    "symbol": "SIEMENS",
+    "segment": "Equity",
+    "qty": 500,
+    "buy": 3110.7595,
+    "sell": 3703.4059
+  },
+  {
+    "id": "imp178703089664926",
+    "buyDate": "2026-03-18",
+    "date": "2026-04-19",
+    "symbol": "SIEMENS",
+    "segment": "Equity",
+    "qty": 1000,
+    "buy": 3110.7595,
+    "sell": 3729.5336
+  },
+  {
+    "id": "imp178703089664927",
+    "buyDate": "2026-08-02",
+    "date": "2026-08-02",
+    "symbol": "MUTHOOTFINANCE",
+    "segment": "Equity",
+    "qty": 3000,
+    "buy": 2886.5201,
+    "sell": 2875.4248
+  },
+  {
+    "id": "imp178703089664928",
+    "buyDate": "2026-04-19",
+    "date": "2026-05-03",
+    "symbol": "WOCKPHARMA",
+    "segment": "Equity",
+    "qty": 1000,
+    "buy": 1406.3,
+    "sell": 1414.4981
+  },
+  {
+    "id": "imp178703089664929",
+    "buyDate": "2026-04-19",
+    "date": "2026-05-04",
+    "symbol": "WOCKPHARMA",
+    "segment": "Equity",
+    "qty": 2000,
+    "buy": 1406.3,
+    "sell": 1569.2897
+  }
+]
